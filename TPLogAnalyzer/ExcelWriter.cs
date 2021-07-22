@@ -32,8 +32,11 @@ namespace TPLogAnalyzer
 
                 int exceptionCount = 0;
                 int stsRowCount = 0;
+                int lineNumberInStsLogFile = 0;
                 foreach (List<string> row in logList)
                 {
+                    lineNumberInStsLogFile++;
+                    IRow excelRow = stsSheet.CreateRow(stsRowCount++);
                     int len = row.Count;
                     if (len != 4)
                     {
@@ -46,18 +49,25 @@ namespace TPLogAnalyzer
                         if (exceptionSheet == null)
                         {
                             exceptionSheet = workbook.CreateSheet("abnormal");
-                            exceptionSheet.SetColumnWidth(1, 100 * 256);
+                            exceptionSheet.SetColumnWidth(0, 100 * 256);
+                            exceptionSheet.SetColumnWidth(1, 10 * 256);
                         }
-                        IRow excelRow = exceptionSheet.CreateRow(exceptionCount++);
-                        ICell excelCell = excelRow.CreateCell(0);
-                        continue;
+                        IRow exceptionRow = exceptionSheet.CreateRow(exceptionCount++);
+                        exceptionRow.CreateCell(0).SetCellValue(errLine);
+                        exceptionRow.CreateCell(1).SetCellValue(lineNumberInStsLogFile.ToString());
+
+                        //also save to sts sheet
+                        excelRow.CreateCell(0).SetCellValue("");
+                        excelRow.CreateCell(1).SetCellValue("");
+                        excelRow.CreateCell(2).SetCellValue("");
+                        excelRow.CreateCell(3).SetCellValue(errLine);
                     }
                     else
                     {
-                        IRow excelRow = stsSheet.CreateRow(stsRowCount++);
                         excelRow.CreateCell(0).SetCellValue(row[0]);
                         excelRow.CreateCell(1).SetCellValue(row[1]);
-                        excelRow.CreateCell(2).SetCellValue(row[2]);
+                        excelRow.CreateCell(2).SetCellValue(row[2].Trim(new char[2] {'[',']' }));
+                        excelRow.CreateCell(2).SetCellValue(row[2].TrimStart('[').TrimEnd(']'));
                         excelRow.CreateCell(3).SetCellValue(row[3]);
 
                         if (row[3].Contains("Tool START UP"))
@@ -72,7 +82,8 @@ namespace TPLogAnalyzer
                     }
                 }
 
-                using (FileStream fs = File.Open(m_filePath + @"\StsLog.xlsx", FileMode.OpenOrCreate))
+                string dateTime = DateTime.Now.ToString("yyyy-MM-dd HH-mm-ss");
+                using (FileStream fs = File.Open(m_filePath + @"\" +m_fileName.Substring(0, m_fileName.IndexOf(@".txt")) + "  --  " + dateTime + ".xlsx", FileMode.OpenOrCreate))
                 {
                     workbook.Write(fs);
                     workbook.Close();

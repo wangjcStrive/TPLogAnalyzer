@@ -23,7 +23,7 @@ namespace TPLogAnalyzer
             if (ofdStsLog.ShowDialog() == DialogResult.OK)
             {
                 string selectFile = System.IO.Path.GetFullPath(ofdStsLog.FileName);
-                if (selectFile.Contains("sts"))
+                if (selectFile.ToLower().Contains("sts"))
                 {
                     tbStsPath.Text = selectFile;
                 }
