@@ -22,7 +22,15 @@ namespace TPLogAnalyzer
         {
             if (ofdStsLog.ShowDialog() == DialogResult.OK)
             {
-                tbStsPath.Text = System.IO.Path.GetFullPath(ofdStsLog.FileName);
+                string selectFile = System.IO.Path.GetFullPath(ofdStsLog.FileName);
+                if (selectFile.Contains("sts"))
+                {
+                    tbStsPath.Text = selectFile;
+                }
+                else
+                {
+                    MessageBox.Show("Please choose StsLog file.", "Error");
+                }
             }
             else
             {
@@ -49,6 +57,13 @@ namespace TPLogAnalyzer
                 ILogReader lr = new StsLogFileReader(tbStsPath.Text);
                 List<List<string>> stsTextList = new List<List<string>>();
                 lr.LogRead(ref stsTextList);
+
+                IExcelWriter writer = new ExcelWriter(tbStsPath.Text);
+                writer.excelWrite(ref stsTextList);
+            }
+            else
+            {
+                MessageBox.Show("Select File first", "Error");
             }
         }
     }
