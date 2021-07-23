@@ -10,6 +10,12 @@ using System.Windows.Forms;
 
 namespace TPLogAnalyzer
 {
+    enum enumLogType
+    {
+        stsLogType = 0,
+        DevLogType,
+        DebugLogType
+    }
     public partial class Form1 : Form
     {
         public Form1()

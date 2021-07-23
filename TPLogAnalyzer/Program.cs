@@ -1,8 +1,10 @@
-﻿using System;
+﻿using Autofac;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using TPLogAnalyzer.Config;
 
 /// <summary>
 /// knowledge
@@ -26,6 +28,13 @@ namespace TPLogAnalyzer
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
             Application.Run(new Form1());
+
+            // todo. IOC is init at here?
+            IContainer IOC;
+            ContainerBuilder builer = new ContainerBuilder();
+            builer.RegisterInstance<IAnalyzerConfigReader>(new ConfigRedaer(enumLogType.stsLogType)).Named<IAnalyzerConfigReader>("StsConfig");
+            builer.RegisterInstance<IAnalyzerConfigReader>(new ConfigRedaer(enumLogType.DevLogType)).Named<IAnalyzerConfigReader>("DevConfig");
+            IOC = builer.Build();
         }
     }
 }
