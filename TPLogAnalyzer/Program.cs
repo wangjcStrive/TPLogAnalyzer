@@ -9,6 +9,8 @@ using System.Windows.Forms;
 ///     1. Excel read/write with NPOI
 ///     2. C# string split/
 ///     3. xml config file
+///     4. IOC. inversion of control
+///         Autofac
 /// </summary>
 
 namespace TPLogAnalyzer
