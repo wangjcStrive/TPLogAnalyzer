@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 using NPOI;
 using NPOI.SS.UserModel;
 using NPOI.XSSF.UserModel;
@@ -90,10 +91,9 @@ namespace TPLogAnalyzer
                     fs.Close();
                 }
             }
-            catch (Exception)
+            catch (Exception e)
             {
-
-                throw;
+                throw e;
             }
         }
 

@@ -38,12 +38,16 @@ namespace TPLogAnalyzer
             this.btStartTransfer = new System.Windows.Forms.Button();
             this.ofdStsLog = new System.Windows.Forms.OpenFileDialog();
             this.ofdDevLog = new System.Windows.Forms.OpenFileDialog();
+            this.menuStrip1 = new System.Windows.Forms.MenuStrip();
+            this.configToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.modifyConfigFileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(97, 54);
+            this.label1.Location = new System.Drawing.Point(33, 54);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(47, 13);
             this.label1.TabIndex = 0;
@@ -52,7 +56,7 @@ namespace TPLogAnalyzer
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(97, 81);
+            this.label2.Location = new System.Drawing.Point(33, 81);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(52, 13);
             this.label2.TabIndex = 1;
@@ -60,23 +64,23 @@ namespace TPLogAnalyzer
             // 
             // tbStsPath
             // 
-            this.tbStsPath.Location = new System.Drawing.Point(150, 51);
+            this.tbStsPath.Location = new System.Drawing.Point(86, 51);
             this.tbStsPath.Name = "tbStsPath";
-            this.tbStsPath.Size = new System.Drawing.Size(186, 20);
+            this.tbStsPath.Size = new System.Drawing.Size(255, 20);
             this.tbStsPath.TabIndex = 2;
             // 
             // tbDevPath
             // 
-            this.tbDevPath.Location = new System.Drawing.Point(150, 79);
+            this.tbDevPath.Location = new System.Drawing.Point(86, 79);
             this.tbDevPath.Name = "tbDevPath";
-            this.tbDevPath.Size = new System.Drawing.Size(186, 20);
+            this.tbDevPath.Size = new System.Drawing.Size(255, 20);
             this.tbDevPath.TabIndex = 3;
             // 
             // btStsChoosePath
             // 
-            this.btStsChoosePath.Location = new System.Drawing.Point(342, 51);
+            this.btStsChoosePath.Location = new System.Drawing.Point(347, 51);
             this.btStsChoosePath.Name = "btStsChoosePath";
-            this.btStsChoosePath.Size = new System.Drawing.Size(31, 20);
+            this.btStsChoosePath.Size = new System.Drawing.Size(21, 20);
             this.btStsChoosePath.TabIndex = 4;
             this.btStsChoosePath.Text = "···";
             this.btStsChoosePath.UseVisualStyleBackColor = true;
@@ -84,9 +88,9 @@ namespace TPLogAnalyzer
             // 
             // btDevChoosePath
             // 
-            this.btDevChoosePath.Location = new System.Drawing.Point(342, 77);
+            this.btDevChoosePath.Location = new System.Drawing.Point(347, 77);
             this.btDevChoosePath.Name = "btDevChoosePath";
-            this.btDevChoosePath.Size = new System.Drawing.Size(31, 23);
+            this.btDevChoosePath.Size = new System.Drawing.Size(21, 23);
             this.btDevChoosePath.TabIndex = 5;
             this.btDevChoosePath.Text = "···";
             this.btDevChoosePath.UseVisualStyleBackColor = true;
@@ -94,7 +98,7 @@ namespace TPLogAnalyzer
             // 
             // btStartTransfer
             // 
-            this.btStartTransfer.Location = new System.Drawing.Point(391, 50);
+            this.btStartTransfer.Location = new System.Drawing.Point(374, 50);
             this.btStartTransfer.Name = "btStartTransfer";
             this.btStartTransfer.Size = new System.Drawing.Size(75, 23);
             this.btStartTransfer.TabIndex = 6;
@@ -114,6 +118,32 @@ namespace TPLogAnalyzer
             this.ofdDevLog.Filter = "text|Dev*.txt|all files|*.*";
             this.ofdDevLog.InitialDirectory = "G:\\Code\\C#\\WinForm\\LogExample";
             // 
+            // menuStrip1
+            // 
+            this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.configToolStripMenuItem});
+            this.menuStrip1.Location = new System.Drawing.Point(0, 0);
+            this.menuStrip1.Name = "menuStrip1";
+            this.menuStrip1.Size = new System.Drawing.Size(478, 24);
+            this.menuStrip1.TabIndex = 7;
+            this.menuStrip1.Text = "msConfig";
+            // 
+            // configToolStripMenuItem
+            // 
+            this.configToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.modifyConfigFileToolStripMenuItem});
+            this.configToolStripMenuItem.Font = new System.Drawing.Font("Segoe UI", 8F);
+            this.configToolStripMenuItem.Name = "configToolStripMenuItem";
+            this.configToolStripMenuItem.Size = new System.Drawing.Size(54, 20);
+            this.configToolStripMenuItem.Text = "&Config";
+            // 
+            // modifyConfigFileToolStripMenuItem
+            // 
+            this.modifyConfigFileToolStripMenuItem.Name = "modifyConfigFileToolStripMenuItem";
+            this.modifyConfigFileToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.modifyConfigFileToolStripMenuItem.Text = "&Modify Config File";
+            this.modifyConfigFileToolStripMenuItem.Click += new System.EventHandler(this.modifyConfigFileToolStripMenuItem_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -126,8 +156,12 @@ namespace TPLogAnalyzer
             this.Controls.Add(this.tbStsPath);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.label1);
+            this.Controls.Add(this.menuStrip1);
+            this.MainMenuStrip = this.menuStrip1;
             this.Name = "Form1";
             this.Text = "TPLog";
+            this.menuStrip1.ResumeLayout(false);
+            this.menuStrip1.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -143,6 +177,9 @@ namespace TPLogAnalyzer
         private System.Windows.Forms.Button btStartTransfer;
         private System.Windows.Forms.OpenFileDialog ofdStsLog;
         private System.Windows.Forms.OpenFileDialog ofdDevLog;
+        private System.Windows.Forms.MenuStrip menuStrip1;
+        private System.Windows.Forms.ToolStripMenuItem configToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem modifyConfigFileToolStripMenuItem;
     }
 }
 

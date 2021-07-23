@@ -34,7 +34,7 @@ namespace TPLogAnalyzer
             }
             else
             {
-                // todo. exception
+                MessageBox.Show("File Choose Fail", "Error");
             }
         }
 
@@ -46,25 +46,39 @@ namespace TPLogAnalyzer
             }
             else
             {
-                // todo. exception
+                MessageBox.Show("File Choose Fail", "Error");
             }
         }
 
         private void btStartTransfer_Click(object sender, EventArgs e)
         {
-            if (tbStsPath.TextLength > 0)
+            try
             {
-                ILogReader lr = new StsLogFileReader(tbStsPath.Text);
-                List<List<string>> stsTextList = new List<List<string>>();
-                lr.LogRead(ref stsTextList);
+                if (tbStsPath.TextLength > 0)
+                {
+                    ILogReader lr = new StsLogFileReader(tbStsPath.Text);
+                    List<List<string>> stsTextList = new List<List<string>>();
+                    lr.LogRead(ref stsTextList);
 
-                IExcelWriter writer = new ExcelWriter(tbStsPath.Text);
-                writer.excelWrite(ref stsTextList);
+                    IExcelWriter writer = new ExcelWriter(tbStsPath.Text);
+                    writer.excelWrite(ref stsTextList);
+                    MessageBox.Show("Transfer Done", "Info");
+                }
+                else
+                {
+                    MessageBox.Show("Select File first", "Error");
+                }
             }
-            else
+            catch (Exception ex)
             {
-                MessageBox.Show("Select File first", "Error");
+                MessageBox.Show(ex.Message, "Error");
+                throw;
             }
+        }
+
+        private void modifyConfigFileToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+
         }
     }
 }
