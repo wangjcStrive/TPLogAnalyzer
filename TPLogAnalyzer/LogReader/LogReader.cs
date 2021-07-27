@@ -9,9 +9,9 @@ using TPLogAnalyzer.LogReader;
 
 namespace TPLogAnalyzer
 {
-    class StsLogFileReader : ILogReader
+    class LogFileReader : ILogReader
     {
-        public StsLogFileReader(string logFileName)
+        public LogFileReader(string logFileName)
         {
             m_logFilePath = logFileName;
         }

@@ -66,7 +66,7 @@ namespace TPLogAnalyzer
                 if (tbStsPath.TextLength > 0)
                 {
                     // todo. move logReader to IOC
-                    ILogReader lr = new StsLogFileReader(tbStsPath.Text);
+                    ILogReader lr = new LogFileReader(tbStsPath.Text);
                     List<List<string>> stsTextList = new List<List<string>>();
                     lr.LogRead(ref stsTextList);
 
@@ -85,10 +85,37 @@ namespace TPLogAnalyzer
                 throw;
             }
         }
+        private void btDevStartTransfer_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                if (tbDevPath.TextLength > 0)
+                {
+                    // todo. move logReader to IOC
+                    ILogReader lr = new LogFileReader(tbDevPath.Text);
+                    List<List<string>> devTextList = new List<List<string>>();
+                    lr.LogRead(ref devTextList);
+
+                    IExcelWriter writer = new StsExcelWriter(tbDevPath.Text);
+                    writer.excelWrite(ref devTextList);
+                    MessageBox.Show("Transfer Done", "Info");
+                }
+                else
+                {
+                    MessageBox.Show("Select File first", "Error");
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "Error");
+                throw;
+            }
+        }
 
         private void modifyConfigFileToolStripMenuItem_Click(object sender, EventArgs e)
         {
             Process.Start(@".\TPLogAnalyzer Config.xml");
         }
+
     }
 }

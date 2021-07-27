@@ -36,12 +36,13 @@ namespace TPLogAnalyzer
             this.tbDevPath = new System.Windows.Forms.TextBox();
             this.btStsChoosePath = new System.Windows.Forms.Button();
             this.btDevChoosePath = new System.Windows.Forms.Button();
-            this.btStartTransfer = new System.Windows.Forms.Button();
+            this.btStsStartTransfer = new System.Windows.Forms.Button();
             this.ofdStsLog = new System.Windows.Forms.OpenFileDialog();
             this.ofdDevLog = new System.Windows.Forms.OpenFileDialog();
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.configToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.modifyConfigFileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.btDevStartTransfer = new System.Windows.Forms.Button();
             this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -97,15 +98,15 @@ namespace TPLogAnalyzer
             this.btDevChoosePath.UseVisualStyleBackColor = true;
             this.btDevChoosePath.Click += new System.EventHandler(this.btDevChoosePath_Click);
             // 
-            // btStartTransfer
+            // btStsStartTransfer
             // 
-            this.btStartTransfer.Location = new System.Drawing.Point(374, 50);
-            this.btStartTransfer.Name = "btStartTransfer";
-            this.btStartTransfer.Size = new System.Drawing.Size(75, 23);
-            this.btStartTransfer.TabIndex = 6;
-            this.btStartTransfer.Text = "Start";
-            this.btStartTransfer.UseVisualStyleBackColor = true;
-            this.btStartTransfer.Click += new System.EventHandler(this.btStartTransfer_Click);
+            this.btStsStartTransfer.Location = new System.Drawing.Point(374, 50);
+            this.btStsStartTransfer.Name = "btStsStartTransfer";
+            this.btStsStartTransfer.Size = new System.Drawing.Size(75, 23);
+            this.btStsStartTransfer.TabIndex = 6;
+            this.btStsStartTransfer.Text = "Sts Start";
+            this.btStsStartTransfer.UseVisualStyleBackColor = true;
+            this.btStsStartTransfer.Click += new System.EventHandler(this.btStartTransfer_Click);
             // 
             // ofdStsLog
             // 
@@ -145,12 +146,23 @@ namespace TPLogAnalyzer
             this.modifyConfigFileToolStripMenuItem.Text = "&Modify Config File";
             this.modifyConfigFileToolStripMenuItem.Click += new System.EventHandler(this.modifyConfigFileToolStripMenuItem_Click);
             // 
+            // btDevStartTransfer
+            // 
+            this.btDevStartTransfer.Location = new System.Drawing.Point(374, 76);
+            this.btDevStartTransfer.Name = "btDevStartTransfer";
+            this.btDevStartTransfer.Size = new System.Drawing.Size(75, 23);
+            this.btDevStartTransfer.TabIndex = 8;
+            this.btDevStartTransfer.Text = "Dev Start";
+            this.btDevStartTransfer.UseVisualStyleBackColor = true;
+            this.btDevStartTransfer.Click += new System.EventHandler(this.btDevStartTransfer_Click);
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(478, 247);
-            this.Controls.Add(this.btStartTransfer);
+            this.Controls.Add(this.btDevStartTransfer);
+            this.Controls.Add(this.btStsStartTransfer);
             this.Controls.Add(this.btDevChoosePath);
             this.Controls.Add(this.btStsChoosePath);
             this.Controls.Add(this.tbDevPath);
@@ -176,12 +188,13 @@ namespace TPLogAnalyzer
         private System.Windows.Forms.TextBox tbDevPath;
         private System.Windows.Forms.Button btStsChoosePath;
         private System.Windows.Forms.Button btDevChoosePath;
-        private System.Windows.Forms.Button btStartTransfer;
+        private System.Windows.Forms.Button btStsStartTransfer;
         private System.Windows.Forms.OpenFileDialog ofdStsLog;
         private System.Windows.Forms.OpenFileDialog ofdDevLog;
         private System.Windows.Forms.MenuStrip menuStrip1;
         private System.Windows.Forms.ToolStripMenuItem configToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem modifyConfigFileToolStripMenuItem;
+        private System.Windows.Forms.Button btDevStartTransfer;
     }
 }
 

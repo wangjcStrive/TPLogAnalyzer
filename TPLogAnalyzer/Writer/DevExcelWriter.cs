@@ -1,25 +1,23 @@
-﻿using System;
+﻿using NPOI.SS.UserModel;
+using NPOI.XSSF.UserModel;
+using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using System.Windows.Forms;
-using Autofac;
-using NPOI;
-using NPOI.SS.UserModel;
-using NPOI.XSSF.UserModel;
-using TPLogAnalyzer.Config;
 
 namespace TPLogAnalyzer.Writer
 {
-    class ExcelWriter : IExcelWriter
+    /// <summary>
+    /// dev log example:
+    ///     2021/07/20| 14:08:03.404| [14dc]| HR: 0x00000000| TYPE: USR STATUS| MSG: Reading configuration data base| LINE: 000025| FILE: Q:\NT Probe\5240\OP5240MeasurementStation\TWMECallback.cpp
+    /// </summary>
+    class DevExcelWriter : IExcelWriter
     {
-        public ExcelWriter(string filePath)
+        public DevExcelWriter(string fileName, string filePath)
         {
-            int lastBackSlantIndex = filePath.LastIndexOf('\\');
-            m_fileName = filePath.Substring(lastBackSlantIndex + 1);
-            m_filePath = filePath.Substring(0, lastBackSlantIndex);
+            m_fileName = fileName;
+            m_filePath = filePath;
         }
 
         public void excelWrite(ref List<List<string>> logList)
@@ -27,21 +25,25 @@ namespace TPLogAnalyzer.Writer
             try
             {
                 IWorkbook workbook = new XSSFWorkbook();
-                ISheet stsSheet = workbook.CreateSheet("StsLog");
-                stsSheet.SetColumnWidth(0, 12 * 256);
-                stsSheet.SetColumnWidth(1, 15 * 256);
-                stsSheet.SetColumnWidth(2, 8 * 256);
-                stsSheet.SetColumnWidth(3, 90 * 256);
+                ISheet devSheet = workbook.CreateSheet("DevLog");
+                devSheet.SetColumnWidth(0, 10 * 256);
+                devSheet.SetColumnWidth(1, 12 * 256);
+                devSheet.SetColumnWidth(2, 8 * 256);
+                devSheet.SetColumnWidth(3, 6 * 256);
+                devSheet.SetColumnWidth(4, 6 * 256);
+                devSheet.SetColumnWidth(5, 90 * 256);
+                devSheet.SetColumnWidth(6, 12 * 256);
+                devSheet.SetColumnWidth(7, 90 * 256);
 
                 int exceptionCount = 0;
-                int stsRowCount = 0;
-                int lineNumberInStsLogFile = 0;
+                int devRowCount = 0;
+                int lineNumberInDevLogFile = 0;
                 foreach (List<string> row in logList)
                 {
-                    lineNumberInStsLogFile++;
-                    IRow excelRow = stsSheet.CreateRow(stsRowCount++);
+                    lineNumberInDevLogFile++;
+                    IRow excelRow = devSheet.CreateRow(devRowCount++);
                     int len = row.Count;
-                    if (len != 4)
+                    if (len != LogColumns.devColumns)
                     {
                         string errLine = null;
                         foreach (string column in row)
@@ -57,9 +59,9 @@ namespace TPLogAnalyzer.Writer
                         }
                         IRow exceptionRow = exceptionSheet.CreateRow(exceptionCount++);
                         exceptionRow.CreateCell(0).SetCellValue(errLine);
-                        exceptionRow.CreateCell(1).SetCellValue(lineNumberInStsLogFile.ToString());
+                        exceptionRow.CreateCell(1).SetCellValue(lineNumberInDevLogFile.ToString());
 
-                        //also save to sts sheet
+                        //also save to dev sheet
                         excelRow.CreateCell(0).SetCellValue("");
                         excelRow.CreateCell(1).SetCellValue("");
                         excelRow.CreateCell(2).SetCellValue("");
@@ -69,12 +71,12 @@ namespace TPLogAnalyzer.Writer
                     {
                         excelRow.CreateCell(0).SetCellValue(row[0]);
                         excelRow.CreateCell(1).SetCellValue(row[1]);
-                        excelRow.CreateCell(2).SetCellValue(row[2].Trim(new char[1] {' '}));
+                        excelRow.CreateCell(2).SetCellValue(row[2].Trim(new char[1] { ' ' }));
                         //excelRow.CreateCell(2).SetCellValue(row[2].TrimStart('[').TrimEnd(']'));
                         excelRow.CreateCell(3).SetCellValue(row[3]);
 
-                        IAnalyzerConfigReader stsConfig = IOC.Container.ResolveNamed<IAnalyzerConfigReader>("StsConfig");
-                        foreach (var item in stsConfig.ConfigList)
+                        IAnalyzerConfigReader devConfig = IOC.Container.ResolveNamed<IAnalyzerConfigReader>("devConfig");
+                        foreach (var item in devConfig.ConfigList)
                         {
                             // todo. use regex
                             if (row[3].ToLower().Contains(item.KeyWord.ToLower()))
@@ -102,7 +104,7 @@ namespace TPLogAnalyzer.Writer
                 }
 
                 string dateTime = DateTime.Now.ToString("yyyy-MM-dd HH-mm-ss");
-                using (FileStream fs = File.Open(m_filePath + @"\" +m_fileName.Substring(0, m_fileName.IndexOf(@".txt")) + "  --  " + dateTime + ".xlsx", FileMode.OpenOrCreate))
+                using (FileStream fs = File.Open(FilePath + @"\" + FileName.Substring(0, FileName.IndexOf(@".txt")) + "  --  " + dateTime + ".xlsx", FileMode.OpenOrCreate))
                 {
                     workbook.Write(fs);
                     workbook.Close();
@@ -119,6 +121,9 @@ namespace TPLogAnalyzer.Writer
         #region Members
         private string m_filePath;
         private string m_fileName;
+
+        public string FilePath { get => m_filePath; set => m_filePath = value; }
+        public string FileName { get => m_fileName; set => m_fileName = value; }
         #endregion
     }
 }
