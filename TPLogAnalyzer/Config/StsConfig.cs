@@ -29,7 +29,7 @@ namespace TPLogAnalyzer.Config
                     break;
             }
 
-            var devSQL = from item in xele.Element("configuration").Element(whichElement).Element("Highlight").Elements("Config")
+            var devSQL = from item in xele.Element(whichElement).Element("Highlight").Elements("Config")
                          select new ConfigModel(item.Element("keyword").Value,
                                                item.Element("fontBold").Value,
                                                item.Element("fontColor").Value,

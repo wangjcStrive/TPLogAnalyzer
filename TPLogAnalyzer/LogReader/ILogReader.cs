@@ -3,12 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using System.Xml.Linq;
 
-namespace TPLogAnalyzer
+namespace TPLogAnalyzer.LogReader
 {
-    class XMLReader
+    interface ILogReader
     {
-        
+        void LogRead(ref List<List<string>> arrList);
     }
 }

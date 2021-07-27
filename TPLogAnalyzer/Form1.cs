@@ -7,6 +7,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using TPLogAnalyzer.LogReader;
+using TPLogAnalyzer.Writer;
 
 namespace TPLogAnalyzer
 {
@@ -62,6 +64,7 @@ namespace TPLogAnalyzer
             {
                 if (tbStsPath.TextLength > 0)
                 {
+                    // todo. move logReader to IOC
                     ILogReader lr = new StsLogFileReader(tbStsPath.Text);
                     List<List<string>> stsTextList = new List<List<string>>();
                     lr.LogRead(ref stsTextList);

@@ -13,5 +13,7 @@ namespace TPLogAnalyzer.Config
     interface IAnalyzerConfigReader
     {
         void readConfig(enumLogType logType);
+
+        List<ConfigModel> ConfigList { get; set; }
     }
 }

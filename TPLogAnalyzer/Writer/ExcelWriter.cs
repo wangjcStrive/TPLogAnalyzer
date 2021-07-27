@@ -5,11 +5,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Autofac;
 using NPOI;
 using NPOI.SS.UserModel;
 using NPOI.XSSF.UserModel;
+using TPLogAnalyzer.Config;
 
-namespace TPLogAnalyzer
+namespace TPLogAnalyzer.Writer
 {
     class ExcelWriter : IExcelWriter
     {
@@ -67,19 +69,35 @@ namespace TPLogAnalyzer
                     {
                         excelRow.CreateCell(0).SetCellValue(row[0]);
                         excelRow.CreateCell(1).SetCellValue(row[1]);
-                        excelRow.CreateCell(2).SetCellValue(row[2].Trim(new char[2] {'[',']' }));
-                        excelRow.CreateCell(2).SetCellValue(row[2].TrimStart('[').TrimEnd(']'));
+                        excelRow.CreateCell(2).SetCellValue(row[2].Trim(new char[1] {' '}));
+                        //excelRow.CreateCell(2).SetCellValue(row[2].TrimStart('[').TrimEnd(']'));
                         excelRow.CreateCell(3).SetCellValue(row[3]);
 
-                        if (row[3].Contains("Tool START UP"))
+                        IAnalyzerConfigReader stsConfig = IOC.Container.ResolveNamed<IAnalyzerConfigReader>("StsConfig");
+                        foreach (var item in stsConfig.ConfigList)
                         {
-                            ICellStyle startupCellStyle = workbook.CreateCellStyle();
-                            IFont startupFont = workbook.CreateFont();
-                            startupFont.Color = IndexedColors.Orange.Index;
-                            startupFont.IsBold = false;
-                            startupCellStyle.SetFont(startupFont);
-                            excelRow.GetCell(3).CellStyle = startupCellStyle;
+                            // todo. use regex
+                            if (row[3].ToLower().Contains(item.KeyWord.ToLower()))
+                            {
+                                ICellStyle cellStyle = workbook.CreateCellStyle();
+                                IFont cellFont = workbook.CreateFont();
+                                cellFont.Color = ConfigColorMap.ColorMapDic[item.FontColor];
+                                cellFont.IsBold = item.FontBold;
+                                cellFont.FontHeightInPoints = item.FontSize;
+                                cellStyle.SetFont(cellFont);
+                                cellStyle.FillBackgroundColor = ConfigColorMap.ColorMapDic[item.BackgroundColor];
+                                excelRow.GetCell(3).CellStyle = cellStyle;
+                            }
                         }
+                        //if (row[3].Contains("Tool START UP"))
+                        //{
+                        //    ICellStyle startupCellStyle = workbook.CreateCellStyle();
+                        //    IFont startupFont = workbook.CreateFont();
+                        //    startupFont.Color = IndexedColors.Orange.Index;
+                        //    startupFont.IsBold = false;
+                        //    startupCellStyle.SetFont(startupFont);
+                        //    excelRow.GetCell(3).CellStyle = startupCellStyle;
+                        //}
                     }
                 }
 
