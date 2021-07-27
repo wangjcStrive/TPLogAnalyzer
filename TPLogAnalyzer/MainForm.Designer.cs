@@ -1,7 +1,7 @@
 ﻿
 namespace TPLogAnalyzer
 {
-    partial class Form1
+    partial class MainForm
     {
         /// <summary>
         /// Required designer variable.
@@ -29,6 +29,7 @@ namespace TPLogAnalyzer
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
             this.label1 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
             this.tbStsPath = new System.Windows.Forms.TextBox();
@@ -140,11 +141,11 @@ namespace TPLogAnalyzer
             // modifyConfigFileToolStripMenuItem
             // 
             this.modifyConfigFileToolStripMenuItem.Name = "modifyConfigFileToolStripMenuItem";
-            this.modifyConfigFileToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.modifyConfigFileToolStripMenuItem.Size = new System.Drawing.Size(169, 22);
             this.modifyConfigFileToolStripMenuItem.Text = "&Modify Config File";
             this.modifyConfigFileToolStripMenuItem.Click += new System.EventHandler(this.modifyConfigFileToolStripMenuItem_Click);
             // 
-            // Form1
+            // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
@@ -157,8 +158,9 @@ namespace TPLogAnalyzer
             this.Controls.Add(this.label2);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.menuStrip1);
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MainMenuStrip = this.menuStrip1;
-            this.Name = "Form1";
+            this.Name = "MainForm";
             this.Text = "TPLog";
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();

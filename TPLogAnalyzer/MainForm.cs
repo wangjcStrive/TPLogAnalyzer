@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
+using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
 using System.Text;
@@ -18,9 +19,9 @@ namespace TPLogAnalyzer
         DevLogType,
         DebugLogType
     }
-    public partial class Form1 : Form
+    public partial class MainForm : Form
     {
-        public Form1()
+        public MainForm()
         {
             InitializeComponent();
         }
@@ -87,7 +88,7 @@ namespace TPLogAnalyzer
 
         private void modifyConfigFileToolStripMenuItem_Click(object sender, EventArgs e)
         {
-
+            Process.Start(@".\TPLogAnalyzer Config.xml");
         }
     }
 }
