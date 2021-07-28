@@ -11,25 +11,26 @@ namespace TPLogAnalyzer.Config
     {
         public ConfigRedaer(enumLogType logType)
         {
-            XElement xele = XElement.Load(@".\TPLogAnalyzer Config.xml");
-            string whichElement = "DefaultConfig";
+            XDocument document = XDocument.Load(@".\TPLogAnalyzer Config.xml");
+            XElement xele = null;
+            //XElement xele = XElement.Load(@".\TPLogAnalyzer Config.xml");
             switch (logType)
             {
                 case enumLogType.stsLogType:
-                    whichElement = "StsLog";
+                    xele = document.Root.Element("StsLog");
                     break;
                 case enumLogType.DevLogType:
-                    whichElement = "DevLog";
+                    xele = document.Root.Element("DevLog");
                     break;
                 case enumLogType.DebugLogType:
-                    whichElement = "DebugLog";
+                    xele = document.Root.Element("DebugLog");
                     break;
                 default:
                     //todo. throw exception.
                     break;
             }
 
-            var devSQL = from item in xele.Element(whichElement).Element("Highlight").Elements("Config")
+            var devSQL = from item in xele.Element("Highlight").Elements("Config")
                          select new ConfigModel(item.Element("keyword").Value,
                                                item.Element("fontBold").Value,
                                                item.Element("fontColor").Value,

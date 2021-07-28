@@ -1,10 +1,13 @@
-﻿using NPOI.SS.UserModel;
+﻿using Autofac;
+using NPOI.SS.UserModel;
 using NPOI.XSSF.UserModel;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using TPLogAnalyzer.Config;
 
 namespace TPLogAnalyzer.Writer
 {
@@ -14,10 +17,11 @@ namespace TPLogAnalyzer.Writer
     /// </summary>
     class DevExcelWriter : IExcelWriter
     {
-        public DevExcelWriter(string fileName, string filePath)
+        public DevExcelWriter(string filePath)
         {
-            m_fileName = fileName;
-            m_filePath = filePath;
+            int lastBackSlantIndex = filePath.LastIndexOf('\\');
+            m_fileName = filePath.Substring(lastBackSlantIndex + 1);
+            m_filePath = filePath.Substring(0, lastBackSlantIndex);
         }
 
         public void excelWrite(ref List<List<string>> logList)
@@ -28,7 +32,7 @@ namespace TPLogAnalyzer.Writer
                 ISheet devSheet = workbook.CreateSheet("DevLog");
                 devSheet.SetColumnWidth(0, 10 * 256);
                 devSheet.SetColumnWidth(1, 12 * 256);
-                devSheet.SetColumnWidth(2, 8 * 256);
+                devSheet.SetColumnWidth(2, 6 * 256);
                 devSheet.SetColumnWidth(3, 6 * 256);
                 devSheet.SetColumnWidth(4, 6 * 256);
                 devSheet.SetColumnWidth(5, 90 * 256);
@@ -62,24 +66,25 @@ namespace TPLogAnalyzer.Writer
                         exceptionRow.CreateCell(1).SetCellValue(lineNumberInDevLogFile.ToString());
 
                         //also save to dev sheet
-                        excelRow.CreateCell(0).SetCellValue("");
-                        excelRow.CreateCell(1).SetCellValue("");
-                        excelRow.CreateCell(2).SetCellValue("");
-                        excelRow.CreateCell(3).SetCellValue(errLine);
+                        excelRow.CreateCell(LogColumns.devTextColumnIndex).SetCellValue(errLine);
                     }
                     else
                     {
                         excelRow.CreateCell(0).SetCellValue(row[0]);
-                        excelRow.CreateCell(1).SetCellValue(row[1]);
+                        excelRow.CreateCell(1).SetCellValue(row[1].Trim(new char[1] { ' '}));
                         excelRow.CreateCell(2).SetCellValue(row[2].Trim(new char[1] { ' ' }));
                         //excelRow.CreateCell(2).SetCellValue(row[2].TrimStart('[').TrimEnd(']'));
-                        excelRow.CreateCell(3).SetCellValue(row[3]);
+                        excelRow.CreateCell(3).SetCellValue(row[3].Trim(new char[1] { ' ' }));
+                        excelRow.CreateCell(4).SetCellValue(row[4].Trim(new char[1] { ' ' }));
+                        excelRow.CreateCell(5).SetCellValue(row[5]);
+                        excelRow.CreateCell(6).SetCellValue(row[6].Trim(new char[1] { ' ' }));
+                        excelRow.CreateCell(7).SetCellValue(row[7].Trim(new char[1] { ' ' }));
 
-                        IAnalyzerConfigReader devConfig = IOC.Container.ResolveNamed<IAnalyzerConfigReader>("devConfig");
+                        IAnalyzerConfigReader devConfig = IOC.Container.ResolveNamed<IAnalyzerConfigReader>("DevConfig");
                         foreach (var item in devConfig.ConfigList)
                         {
                             // todo. use regex
-                            if (row[3].ToLower().Contains(item.KeyWord.ToLower()))
+                            if (row[LogColumns.devTextColumnIndex].ToLower().Contains(item.KeyWord.ToLower()))
                             {
                                 ICellStyle cellStyle = workbook.CreateCellStyle();
                                 IFont cellFont = workbook.CreateFont();
@@ -88,18 +93,9 @@ namespace TPLogAnalyzer.Writer
                                 cellFont.FontHeightInPoints = item.FontSize;
                                 cellStyle.SetFont(cellFont);
                                 cellStyle.FillBackgroundColor = ConfigColorMap.ColorMapDic[item.BackgroundColor];
-                                excelRow.GetCell(3).CellStyle = cellStyle;
+                                excelRow.GetCell(LogColumns.devTextColumnIndex).CellStyle = cellStyle;
                             }
                         }
-                        //if (row[3].Contains("Tool START UP"))
-                        //{
-                        //    ICellStyle startupCellStyle = workbook.CreateCellStyle();
-                        //    IFont startupFont = workbook.CreateFont();
-                        //    startupFont.Color = IndexedColors.Orange.Index;
-                        //    startupFont.IsBold = false;
-                        //    startupCellStyle.SetFont(startupFont);
-                        //    excelRow.GetCell(3).CellStyle = startupCellStyle;
-                        //}
                     }
                 }
 

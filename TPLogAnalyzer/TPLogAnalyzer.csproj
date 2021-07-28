@@ -137,6 +137,7 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Resource\GoldenTPLogAnalyzerConfig.xml" />
     <Content Include="Resource\TP Main.ico" />
   </ItemGroup>
   <ItemGroup />

@@ -51,7 +51,15 @@ namespace TPLogAnalyzer
         {
             if (ofdDevLog.ShowDialog() == DialogResult.OK)
             {
-                tbStsPath.Text = System.IO.Path.GetFullPath(ofdDevLog.FileName);
+                string selectFile = System.IO.Path.GetFullPath(ofdDevLog.FileName);
+                if (selectFile.ToLower().Contains("dev"))
+                {
+                    tbDevPath.Text = selectFile;
+                }
+                else
+                {
+                    MessageBox.Show("Please choose DevLog file.", "Error");
+                }
             }
             else
             {
@@ -70,7 +78,7 @@ namespace TPLogAnalyzer
                     List<List<string>> stsTextList = new List<List<string>>();
                     lr.LogRead(ref stsTextList);
 
-                    IExcelWriter writer = new ExcelWriter(tbStsPath.Text);
+                    IExcelWriter writer = new StsExcelWriter(tbStsPath.Text);
                     writer.excelWrite(ref stsTextList);
                     MessageBox.Show("Transfer Done", "Info");
                 }
@@ -96,7 +104,7 @@ namespace TPLogAnalyzer
                     List<List<string>> devTextList = new List<List<string>>();
                     lr.LogRead(ref devTextList);
 
-                    IExcelWriter writer = new StsExcelWriter(tbDevPath.Text);
+                    IExcelWriter writer = new DevExcelWriter(tbDevPath.Text);
                     writer.excelWrite(ref devTextList);
                     MessageBox.Show("Transfer Done", "Info");
                 }

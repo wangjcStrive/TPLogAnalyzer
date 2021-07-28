@@ -60,10 +60,7 @@ namespace TPLogAnalyzer.Writer
                         exceptionRow.CreateCell(1).SetCellValue(lineNumberInStsLogFile.ToString());
 
                         //also save to sts sheet
-                        excelRow.CreateCell(0).SetCellValue("");
-                        excelRow.CreateCell(1).SetCellValue("");
-                        excelRow.CreateCell(2).SetCellValue("");
-                        excelRow.CreateCell(3).SetCellValue(errLine);
+                        excelRow.CreateCell(LogColumns.stsTextColumnIndex).SetCellValue(errLine);
                     }
                     else
                     {
@@ -77,7 +74,7 @@ namespace TPLogAnalyzer.Writer
                         foreach (var item in stsConfig.ConfigList)
                         {
                             // todo. use regex
-                            if (row[3].ToLower().Contains(item.KeyWord.ToLower()))
+                            if (row[LogColumns.stsTextColumnIndex].ToLower().Contains(item.KeyWord.ToLower()))
                             {
                                 ICellStyle cellStyle = workbook.CreateCellStyle();
                                 IFont cellFont = workbook.CreateFont();
@@ -86,18 +83,9 @@ namespace TPLogAnalyzer.Writer
                                 cellFont.FontHeightInPoints = item.FontSize;
                                 cellStyle.SetFont(cellFont);
                                 cellStyle.FillBackgroundColor = ConfigColorMap.ColorMapDic[item.BackgroundColor];
-                                excelRow.GetCell(3).CellStyle = cellStyle;
+                                excelRow.GetCell(LogColumns.stsTextColumnIndex).CellStyle = cellStyle;
                             }
                         }
-                        //if (row[3].Contains("Tool START UP"))
-                        //{
-                        //    ICellStyle startupCellStyle = workbook.CreateCellStyle();
-                        //    IFont startupFont = workbook.CreateFont();
-                        //    startupFont.Color = IndexedColors.Orange.Index;
-                        //    startupFont.IsBold = false;
-                        //    startupCellStyle.SetFont(startupFont);
-                        //    excelRow.GetCell(3).CellStyle = startupCellStyle;
-                        //}
                     }
                 }
 
