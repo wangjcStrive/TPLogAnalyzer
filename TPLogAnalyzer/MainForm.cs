@@ -25,14 +25,9 @@ namespace TPLogAnalyzer
         {
             if (ofdStsLog.ShowDialog() == DialogResult.OK)
             {
-                string selectFile = System.IO.Path.GetFullPath(ofdStsLog.FileName);
-                if (selectFile.ToLower().Contains("sts"))
+                foreach (var item in ofdStsLog.FileNames)
                 {
-                    tbStsPath.Text = selectFile;
-                }
-                else
-                {
-                    MessageBox.Show("Please choose StsLog file.", "Error");
+                    tbStsPath.Text += item + @"; ";
                 }
             }
             else
@@ -45,14 +40,9 @@ namespace TPLogAnalyzer
         {
             if (ofdDevLog.ShowDialog() == DialogResult.OK)
             {
-                string selectFile = System.IO.Path.GetFullPath(ofdDevLog.FileName);
-                if (selectFile.ToLower().Contains("dev"))
+                foreach (var item in ofdDevLog.FileNames)
                 {
-                    tbDevPath.Text = selectFile;
-                }
-                else
-                {
-                    MessageBox.Show("Please choose DevLog file.", "Error");
+                    tbDevPath.Text += item + @"; ";
                 }
             }
             else
@@ -65,20 +55,25 @@ namespace TPLogAnalyzer
         {
             try
             {
-                if (tbStsPath.TextLength > 0)
+                int index = 1;
+                foreach (var fullFilePath in ofdStsLog.FileNames)
                 {
-                    // todo. move logReader to IOC
-                    ILogReader lr = new LogFileReader(tbStsPath.Text);
-                    List<List<string>> stsTextList = new List<List<string>>();
-                    var textTotalLines = lr.LogRead(ref stsTextList);
+                    if (fullFilePath.ToLower().Contains("sts"))
+                    {
+                        // todo. move logReader to IOC
+                        ILogReader lr = new LogFileReader(fullFilePath);
+                        List<List<string>> stsTextList = new List<List<string>>();
+                        var textTotalLines = lr.LogRead(ref stsTextList);
 
-                    IExcelWriter writer = new StsExcelWriter(tbStsPath.Text);
-                    var devTotalLine = writer.excelWrite(ref stsTextList);
-                    MessageBox.Show(string.Format("Transfer Done Successfully.\nText Line:  {0}\nExcel Line: {1}", textTotalLines, devTotalLine), "Done");
-                }
-                else
-                {
-                    MessageBox.Show("Select File first", "Error");
+                        IExcelWriter writer = new StsExcelWriter(fullFilePath);
+                        var devTotalLine = writer.excelWrite(ref stsTextList);
+                        MessageBox.Show(string.Format("Transfer Done {0} of {1} Successfully.\nText Line:  {2}\nExcel Line: {3}", index, ofdStsLog.FileNames.Length, textTotalLines, devTotalLine), "Done");
+                        index++;
+                    }
+                    else
+                    {
+                        MessageBox.Show(string.Format("Please choose sts Log.\n{0}", fullFilePath), "Error");
+                    }
                 }
             }
             catch (Exception ex)
@@ -91,20 +86,25 @@ namespace TPLogAnalyzer
         {
             try
             {
-                if (tbDevPath.TextLength > 0)
+                int index = 1;
+                foreach (var fullFilePath in ofdDevLog.FileNames)
                 {
-                    // todo. move logReader to IOC
-                    ILogReader lr = new LogFileReader(tbDevPath.Text);
-                    List<List<string>> devTextList = new List<List<string>>();
-                    var textTotalLines = lr.LogRead(ref devTextList);
+                    if (fullFilePath.ToLower().Contains("dev"))
+                    {
+                        // todo. move logReader to IOC
+                        ILogReader lr = new LogFileReader(fullFilePath);
+                        List<List<string>> devTextList = new List<List<string>>();
+                        var textTotalLines = lr.LogRead(ref devTextList);
 
-                    IExcelWriter writer = new DevExcelWriter(tbDevPath.Text);
-                    var devTotalLine = writer.excelWrite(ref devTextList);
-                    MessageBox.Show(string.Format("Transfer Done Successfully.\n\nText Line:  {0}\nExcel Line: {1}", textTotalLines, devTotalLine), "Done");
-                }
-                else
-                {
-                    MessageBox.Show("Select File first", "Error");
+                        IExcelWriter writer = new DevExcelWriter(fullFilePath);
+                        var devTotalLine = writer.excelWrite(ref devTextList);
+                        MessageBox.Show(string.Format("Transfer Done {0} of {1} Successfully.\nText Line:  {2}\nExcel Line: {3}", index, ofdDevLog.FileNames.Length, textTotalLines, devTotalLine), "Done");
+                        index++;
+                    }
+                    else
+                    {
+                        MessageBox.Show(string.Format("Please choose dev Log.\n{0}", fullFilePath), "Error");
+                    }
                 }
             }
             catch (Exception ex)
