@@ -4,9 +4,6 @@ using NPOI.XSSF.UserModel;
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using TPLogAnalyzer.Config;
 
 namespace TPLogAnalyzer.Writer
@@ -24,8 +21,9 @@ namespace TPLogAnalyzer.Writer
             m_filePath = filePath.Substring(0, lastBackSlantIndex);
         }
 
-        public void excelWrite(ref List<List<string>> logList)
+        public int excelWrite(ref List<List<string>> logList)
         {
+            int totalLines = 0;
             try
             {
                 IWorkbook workbook = new XSSFWorkbook();
@@ -42,11 +40,16 @@ namespace TPLogAnalyzer.Writer
                 int exceptionCount = 0;
                 int devRowCount = 0;
                 int lineNumberInDevLogFile = 0;
+
+                IAnalyzerConfigReader devConfig = IOC.Container.ResolveNamed<IAnalyzerConfigReader>("DevConfig");
+
                 foreach (List<string> row in logList)
                 {
                     lineNumberInDevLogFile++;
                     IRow excelRow = devSheet.CreateRow(devRowCount++);
+                    totalLines++;
                     int len = row.Count;
+                    // todo. if length not right, you can't highlight it even if it is in config.xml
                     if (len != LogColumns.devColumns)
                     {
                         string errLine = null;
@@ -71,7 +74,7 @@ namespace TPLogAnalyzer.Writer
                     else
                     {
                         excelRow.CreateCell(0).SetCellValue(row[0]);
-                        excelRow.CreateCell(1).SetCellValue(row[1].Trim(new char[1] { ' '}));
+                        excelRow.CreateCell(1).SetCellValue(row[1].Trim(new char[1] { ' ' }));
                         excelRow.CreateCell(2).SetCellValue(row[2].Trim(new char[1] { ' ' }));
                         //excelRow.CreateCell(2).SetCellValue(row[2].TrimStart('[').TrimEnd(']'));
                         excelRow.CreateCell(3).SetCellValue(row[3].Trim(new char[1] { ' ' }));
@@ -80,7 +83,6 @@ namespace TPLogAnalyzer.Writer
                         excelRow.CreateCell(6).SetCellValue(row[6].Trim(new char[1] { ' ' }));
                         excelRow.CreateCell(7).SetCellValue(row[7].Trim(new char[1] { ' ' }));
 
-                        IAnalyzerConfigReader devConfig = IOC.Container.ResolveNamed<IAnalyzerConfigReader>("DevConfig");
                         foreach (var item in devConfig.ConfigList)
                         {
                             // todo. use regex
@@ -111,6 +113,7 @@ namespace TPLogAnalyzer.Writer
             {
                 throw e;
             }
+            return totalLines;
         }
 
 

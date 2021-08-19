@@ -3,8 +3,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
-using NPOI;
 using TPLogAnalyzer.LogReader;
 
 namespace TPLogAnalyzer
@@ -16,21 +14,24 @@ namespace TPLogAnalyzer
             m_logFilePath = logFileName;
         }
 
-        public void LogRead(ref List<List<string>> arrList)
+        public int LogRead(ref List<List<string>> arrList)
         {
+            int totalLines = 0;
             try
             {
                 StreamReader sreader = new StreamReader(LogFilePath, Encoding.Default);
                 string line;
                 while ((line = sreader.ReadLine()) != null)
                 {
+                    totalLines++;
                     arrList.Add(line.Split('|').ToList());
                 }
             }
-            catch (Exception e)
+            catch (Exception ex)
             {
-                throw;
+                throw ex;
             }
+            return totalLines;
         }
 
         #region members

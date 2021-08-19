@@ -1,14 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 
 namespace TPLogAnalyzer.Writer
 {
     interface IExcelWriter
     {
-        void excelWrite(ref List<List<string>> logList);
+        int excelWrite(ref List<List<string>> logList);
 
         string FileName { get; set; }
         string FilePath { get; set; }

@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace TPLogAnalyzer.Config
+﻿namespace TPLogAnalyzer.Config
 {
     class ConfigModel
     {
@@ -14,11 +8,10 @@ namespace TPLogAnalyzer.Config
         private uint m_fontSize;
         private string m_backgroundColor;
 
-        // todo. set fontBold/fontSize type from string to bool
         public ConfigModel(string keyword, string fontBold, string fontColor, string fontSize, string backgroundColor)
         {
             m_keyWord = keyword;
-            m_fontBold = fontBold.ToLower() == "true"?true:false;
+            m_fontBold = fontBold.ToLower() == "true" ? true : false;
             m_fontColor = fontColor;
             if (!uint.TryParse(fontSize, out m_fontSize))
                 m_fontSize = 11;

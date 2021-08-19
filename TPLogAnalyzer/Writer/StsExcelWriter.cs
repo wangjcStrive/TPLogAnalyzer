@@ -1,14 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
-using Autofac;
-using NPOI;
+﻿using Autofac;
 using NPOI.SS.UserModel;
 using NPOI.XSSF.UserModel;
+using System;
+using System.Collections.Generic;
+using System.IO;
 using TPLogAnalyzer.Config;
 
 namespace TPLogAnalyzer.Writer
@@ -22,8 +17,9 @@ namespace TPLogAnalyzer.Writer
             m_filePath = filePath.Substring(0, lastBackSlantIndex);
         }
 
-        public void excelWrite(ref List<List<string>> logList)
+        public int excelWrite(ref List<List<string>> logList)
         {
+            int totalLines = 0;
             try
             {
                 IWorkbook workbook = new XSSFWorkbook();
@@ -40,6 +36,7 @@ namespace TPLogAnalyzer.Writer
                 {
                     lineNumberInStsLogFile++;
                     IRow excelRow = stsSheet.CreateRow(stsRowCount++);
+                    totalLines++;
                     int len = row.Count;
                     if (len != LogColumns.stsColumns)
                     {
@@ -66,7 +63,7 @@ namespace TPLogAnalyzer.Writer
                     {
                         excelRow.CreateCell(0).SetCellValue(row[0]);
                         excelRow.CreateCell(1).SetCellValue(row[1].Trim(new char[1] { ' ' }));
-                        excelRow.CreateCell(2).SetCellValue(row[2].Trim(new char[1] {' '}));
+                        excelRow.CreateCell(2).SetCellValue(row[2].Trim(new char[1] { ' ' }));
                         //excelRow.CreateCell(2).SetCellValue(row[2].TrimStart('[').TrimEnd(']'));
                         excelRow.CreateCell(3).SetCellValue(row[3]);
 
@@ -101,6 +98,8 @@ namespace TPLogAnalyzer.Writer
             {
                 throw e;
             }
+
+            return totalLines;
         }
 
 

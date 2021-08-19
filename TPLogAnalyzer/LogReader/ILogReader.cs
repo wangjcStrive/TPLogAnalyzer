@@ -1,13 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 
 namespace TPLogAnalyzer.LogReader
 {
     interface ILogReader
     {
-        void LogRead(ref List<List<string>> arrList);
+        int LogRead(ref List<List<string>> arrList);
     }
 }

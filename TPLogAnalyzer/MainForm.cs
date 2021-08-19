@@ -1,12 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Diagnostics;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using TPLogAnalyzer.LogReader;
 using TPLogAnalyzer.Writer;
@@ -76,11 +70,11 @@ namespace TPLogAnalyzer
                     // todo. move logReader to IOC
                     ILogReader lr = new LogFileReader(tbStsPath.Text);
                     List<List<string>> stsTextList = new List<List<string>>();
-                    lr.LogRead(ref stsTextList);
+                    var textTotalLines = lr.LogRead(ref stsTextList);
 
                     IExcelWriter writer = new StsExcelWriter(tbStsPath.Text);
-                    writer.excelWrite(ref stsTextList);
-                    MessageBox.Show("Transfer Done", "Info");
+                    var devTotalLine = writer.excelWrite(ref stsTextList);
+                    MessageBox.Show(string.Format("Transfer Done Successfully.\nText Line:  {0}\nExcel Line: {1}", textTotalLines, devTotalLine), "Done");
                 }
                 else
                 {
@@ -102,11 +96,11 @@ namespace TPLogAnalyzer
                     // todo. move logReader to IOC
                     ILogReader lr = new LogFileReader(tbDevPath.Text);
                     List<List<string>> devTextList = new List<List<string>>();
-                    lr.LogRead(ref devTextList);
+                    var textTotalLines = lr.LogRead(ref devTextList);
 
                     IExcelWriter writer = new DevExcelWriter(tbDevPath.Text);
-                    writer.excelWrite(ref devTextList);
-                    MessageBox.Show("Transfer Done", "Info");
+                    var devTotalLine = writer.excelWrite(ref devTextList);
+                    MessageBox.Show(string.Format("Transfer Done Successfully.\n\nText Line:  {0}\nExcel Line: {1}", textTotalLines, devTotalLine), "Done");
                 }
                 else
                 {

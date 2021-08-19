@@ -113,12 +113,14 @@ namespace TPLogAnalyzer
             this.ofdStsLog.FileName = "StsLogOFD";
             this.ofdStsLog.Filter = "text|Sts*.txt|all files|*.*";
             this.ofdStsLog.InitialDirectory = "G:\\Code\\C#\\WinForm\\LogExample";
+            this.ofdStsLog.Multiselect = true;
             // 
             // ofdDevLog
             // 
             this.ofdDevLog.FileName = "DevLogOFD";
             this.ofdDevLog.Filter = "text|Dev*.txt|all files|*.*";
             this.ofdDevLog.InitialDirectory = "G:\\Code\\C#\\WinForm\\LogExample";
+            this.ofdDevLog.Multiselect = true;
             // 
             // menuStrip1
             // 
