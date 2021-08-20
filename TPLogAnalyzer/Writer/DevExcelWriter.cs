@@ -24,10 +24,19 @@ namespace TPLogAnalyzer.Writer
         public int excelWrite(ref List<List<string>> logList)
         {
             int totalLines = 0;
+            IWorkbook workbook = new XSSFWorkbook();
+            ISheet devSheet = workbook.CreateSheet("DevLog");
+
             try
             {
-                IWorkbook workbook = new XSSFWorkbook();
-                ISheet devSheet = workbook.CreateSheet("DevLog");
+                IAnalyzerConfigReader devConfig = IOC.Container.ResolveNamed<IAnalyzerConfigReader>("DevConfig");
+                Dictionary<string, int> configKeywordCount = new Dictionary<string, int>();
+                foreach (var item in devConfig.ConfigList)
+                {
+                    configKeywordCount.Add(item.KeyWord, 0);
+                }
+
+
                 devSheet.SetColumnWidth(0, 10 * 256);
                 devSheet.SetColumnWidth(1, 12 * 256);
                 devSheet.SetColumnWidth(2, 6 * 256);
@@ -41,7 +50,6 @@ namespace TPLogAnalyzer.Writer
                 int devRowCount = 0;
                 int lineNumberInDevLogFile = 0;
 
-                IAnalyzerConfigReader devConfig = IOC.Container.ResolveNamed<IAnalyzerConfigReader>("DevConfig");
 
                 foreach (List<string> row in logList)
                 {
@@ -88,6 +96,11 @@ namespace TPLogAnalyzer.Writer
                             // todo. use regex
                             if (row[LogColumns.devTextColumnIndex].ToLower().Contains(item.KeyWord.ToLower()))
                             {
+                                IName cellName = devSheet.Workbook.CreateName();
+                                cellName.NameName = item.KeyWord.Replace(' ', '_') + "___" + configKeywordCount[item.KeyWord];
+                                cellName.RefersToFormula = string.Format("'DevLog'!$A${0}:$D${1}", excelRow.RowNum + 1, excelRow.RowNum + 1);
+                                configKeywordCount[item.KeyWord] += 1;
+
                                 ICellStyle cellStyle = workbook.CreateCellStyle();
                                 IFont cellFont = workbook.CreateFont();
                                 cellFont.Color = ConfigColorMap.ColorMapDic[item.FontColor];

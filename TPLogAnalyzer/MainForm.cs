@@ -18,6 +18,7 @@ namespace TPLogAnalyzer
         public MainForm()
         {
             InitializeComponent();
+            this.StartPosition = FormStartPosition.CenterScreen;
         }
 
         // todo. select multi files
@@ -79,7 +80,6 @@ namespace TPLogAnalyzer
             catch (Exception ex)
             {
                 MessageBox.Show(ex.Message, "Error");
-                throw;
             }
         }
         private void btDevStartTransfer_Click(object sender, EventArgs e)

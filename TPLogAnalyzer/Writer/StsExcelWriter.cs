@@ -20,10 +20,18 @@ namespace TPLogAnalyzer.Writer
         public int excelWrite(ref List<List<string>> logList)
         {
             int totalLines = 0;
+            IWorkbook workbook = new XSSFWorkbook();
+            ISheet stsSheet = workbook.CreateSheet("StsLog");
             try
             {
-                IWorkbook workbook = new XSSFWorkbook();
-                ISheet stsSheet = workbook.CreateSheet("StsLog");
+                IAnalyzerConfigReader stsConfig = IOC.Container.ResolveNamed<IAnalyzerConfigReader>("StsConfig");
+                Dictionary<string, int> configKeywordCount = new Dictionary<string, int>();
+
+                foreach (var item in stsConfig.ConfigList)
+                {
+                    configKeywordCount.Add(item.KeyWord, 0);
+                }
+
                 stsSheet.SetColumnWidth(0, 10 * 256);
                 stsSheet.SetColumnWidth(1, 12 * 256);
                 stsSheet.SetColumnWidth(2, 8 * 256);
@@ -67,12 +75,16 @@ namespace TPLogAnalyzer.Writer
                         //excelRow.CreateCell(2).SetCellValue(row[2].TrimStart('[').TrimEnd(']'));
                         excelRow.CreateCell(3).SetCellValue(row[3]);
 
-                        IAnalyzerConfigReader stsConfig = IOC.Container.ResolveNamed<IAnalyzerConfigReader>("StsConfig");
                         foreach (var item in stsConfig.ConfigList)
                         {
                             // todo. use regex
                             if (row[LogColumns.stsTextColumnIndex].ToLower().Contains(item.KeyWord.ToLower()))
                             {
+                                IName cellName = stsSheet.Workbook.CreateName();
+                                cellName.NameName = item.KeyWord.Replace(' ', '_') + "___" + configKeywordCount[item.KeyWord];
+                                cellName.RefersToFormula = string.Format("'StsLog'!$A${0}:$D${1}", excelRow.RowNum+1, excelRow.RowNum + 1);
+                                configKeywordCount[item.KeyWord] += 1;
+
                                 ICellStyle cellStyle = workbook.CreateCellStyle();
                                 IFont cellFont = workbook.CreateFont();
                                 cellFont.Color = ConfigColorMap.ColorMapDic[item.FontColor];
@@ -98,7 +110,6 @@ namespace TPLogAnalyzer.Writer
             {
                 throw e;
             }
-
             return totalLines;
         }
 
