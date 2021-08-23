@@ -14,29 +14,28 @@ namespace TPLogAnalyzer.Writer
     /// </summary>
     class DevExcelWriter : IExcelWriter
     {
-        public DevExcelWriter(string filePath)
+        public DevExcelWriter()
         {
-            int lastBackSlantIndex = filePath.LastIndexOf('\\');
-            m_fileName = filePath.Substring(lastBackSlantIndex + 1);
-            m_filePath = filePath.Substring(0, lastBackSlantIndex);
+            m_workbook = new XSSFWorkbook();
+
+            m_configKeywordCount = new Dictionary<string, int>();
+            foreach (var item in IOC.Container.ResolveNamed<IAnalyzerConfigReader>("DevConfig").ConfigList)
+            {
+                m_configKeywordCount.Add(item.KeyWord, 0);
+            }
         }
 
-        public int excelWrite(ref List<List<string>> logList)
+        public int excelWrite(ref List<List<string>> logList, string logFileFullPath)
         {
             int totalLines = 0;
-            IWorkbook workbook = new XSSFWorkbook();
-            ISheet devSheet = workbook.CreateSheet("DevLog");
+            int index1 = logFileFullPath.LastIndexOf('\\');
+            int index2 = logFileFullPath.LastIndexOf('.');
+            string filePath = logFileFullPath.Substring(0, logFileFullPath.LastIndexOf('\\'));
+            string sheetName = logFileFullPath.Substring(index1 + 1, index2 - index1 - 1);
 
             try
             {
-                IAnalyzerConfigReader devConfig = IOC.Container.ResolveNamed<IAnalyzerConfigReader>("DevConfig");
-                Dictionary<string, int> configKeywordCount = new Dictionary<string, int>();
-                foreach (var item in devConfig.ConfigList)
-                {
-                    configKeywordCount.Add(item.KeyWord, 0);
-                }
-
-
+                ISheet devSheet = m_workbook.CreateSheet(sheetName);
                 devSheet.SetColumnWidth(0, 10 * 256);
                 devSheet.SetColumnWidth(1, 12 * 256);
                 devSheet.SetColumnWidth(2, 6 * 256);
@@ -46,7 +45,6 @@ namespace TPLogAnalyzer.Writer
                 devSheet.SetColumnWidth(6, 12 * 256);
                 devSheet.SetColumnWidth(7, 90 * 256);
 
-                int exceptionCount = 0;
                 int devRowCount = 0;
                 int lineNumberInDevLogFile = 0;
 
@@ -65,17 +63,6 @@ namespace TPLogAnalyzer.Writer
                         {
                             errLine += column + " ";
                         }
-                        ISheet exceptionSheet = workbook.GetSheet("abnormal");
-                        if (exceptionSheet == null)
-                        {
-                            exceptionSheet = workbook.CreateSheet("abnormal");
-                            exceptionSheet.SetColumnWidth(0, 100 * 256);
-                            exceptionSheet.SetColumnWidth(1, 10 * 256);
-                        }
-                        IRow exceptionRow = exceptionSheet.CreateRow(exceptionCount++);
-                        exceptionRow.CreateCell(0).SetCellValue(errLine);
-                        exceptionRow.CreateCell(1).SetCellValue(lineNumberInDevLogFile.ToString());
-
                         //also save to dev sheet
                         excelRow.CreateCell(LogColumns.devTextColumnIndex).SetCellValue(errLine);
                     }
@@ -91,18 +78,18 @@ namespace TPLogAnalyzer.Writer
                         excelRow.CreateCell(6).SetCellValue(row[6].Trim(new char[1] { ' ' }));
                         excelRow.CreateCell(7).SetCellValue(row[7].Trim(new char[1] { ' ' }));
 
-                        foreach (var item in devConfig.ConfigList)
+                        foreach (var item in IOC.Container.ResolveNamed<IAnalyzerConfigReader>("DevConfig").ConfigList)
                         {
                             // todo. use regex
                             if (row[LogColumns.devTextColumnIndex].ToLower().Contains(item.KeyWord.ToLower()))
                             {
                                 IName cellName = devSheet.Workbook.CreateName();
-                                cellName.NameName = item.KeyWord.Replace(' ', '_') + "___" + configKeywordCount[item.KeyWord];
-                                cellName.RefersToFormula = string.Format("'DevLog'!$A${0}:$D${1}", excelRow.RowNum + 1, excelRow.RowNum + 1);
-                                configKeywordCount[item.KeyWord] += 1;
+                                cellName.NameName = item.KeyWord.Replace(' ', '_') + "___" + m_configKeywordCount[item.KeyWord];
+                                cellName.RefersToFormula = string.Format("'{0}'!$A${1}:$D${2}", sheetName, excelRow.RowNum + 1, excelRow.RowNum + 1);
+                                m_configKeywordCount[item.KeyWord] += 1;
 
-                                ICellStyle cellStyle = workbook.CreateCellStyle();
-                                IFont cellFont = workbook.CreateFont();
+                                ICellStyle cellStyle = m_workbook.CreateCellStyle();
+                                IFont cellFont = m_workbook.CreateFont();
                                 cellFont.Color = ConfigColorMap.ColorMapDic[item.FontColor];
                                 cellFont.IsBold = item.FontBold;
                                 cellFont.FontHeightInPoints = item.FontSize;
@@ -115,10 +102,9 @@ namespace TPLogAnalyzer.Writer
                 }
 
                 string dateTime = DateTime.Now.ToString("yyyy-MM-dd HH-mm-ss");
-                using (FileStream fs = File.Open(FilePath + @"\" + FileName.Substring(0, FileName.IndexOf(@".txt")) + "  --  " + dateTime + ".xlsx", FileMode.OpenOrCreate))
+                using (FileStream fs = File.Open(filePath + "\\DevLog.xlsx", FileMode.OpenOrCreate))
                 {
-                    workbook.Write(fs);
-                    workbook.Close();
+                    m_workbook.Write(fs);
                     fs.Close();
                 }
             }
@@ -131,11 +117,8 @@ namespace TPLogAnalyzer.Writer
 
 
         #region Members
-        private string m_filePath;
-        private string m_fileName;
-
-        public string FilePath { get => m_filePath; set => m_filePath = value; }
-        public string FileName { get => m_fileName; set => m_fileName = value; }
+        IWorkbook m_workbook;
+        Dictionary<string, int> m_configKeywordCount;
         #endregion
     }
 }

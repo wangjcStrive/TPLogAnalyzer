@@ -4,10 +4,7 @@ namespace TPLogAnalyzer.Writer
 {
     interface IExcelWriter
     {
-        int excelWrite(ref List<List<string>> logList);
-
-        string FileName { get; set; }
-        string FilePath { get; set; }
+        int excelWrite(ref List<List<string>> logList, string logFileFullPath);
     }
     public struct LogColumns
     {

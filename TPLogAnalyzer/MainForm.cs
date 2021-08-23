@@ -56,6 +56,7 @@ namespace TPLogAnalyzer
         {
             try
             {
+                IExcelWriter writer = new StsExcelWriter();
                 int index = 1;
                 foreach (var fullFilePath in ofdStsLog.FileNames)
                 {
@@ -66,8 +67,7 @@ namespace TPLogAnalyzer
                         List<List<string>> stsTextList = new List<List<string>>();
                         var textTotalLines = lr.LogRead(ref stsTextList);
 
-                        IExcelWriter writer = new StsExcelWriter(fullFilePath);
-                        var devTotalLine = writer.excelWrite(ref stsTextList);
+                        var devTotalLine = writer.excelWrite(ref stsTextList, fullFilePath);
                         MessageBox.Show(string.Format("Transfer Done {0} of {1} Successfully.\nText Line:  {2}\nExcel Line: {3}", index, ofdStsLog.FileNames.Length, textTotalLines, devTotalLine), "Done");
                         index++;
                     }
@@ -76,6 +76,7 @@ namespace TPLogAnalyzer
                         MessageBox.Show(string.Format("Please choose sts Log.\n{0}", fullFilePath), "Error");
                     }
                 }
+                tbStsPath.Text = "";
             }
             catch (Exception ex)
             {
@@ -87,6 +88,7 @@ namespace TPLogAnalyzer
             try
             {
                 int index = 1;
+                IExcelWriter writer = new DevExcelWriter();
                 foreach (var fullFilePath in ofdDevLog.FileNames)
                 {
                     if (fullFilePath.ToLower().Contains("dev"))
@@ -96,8 +98,7 @@ namespace TPLogAnalyzer
                         List<List<string>> devTextList = new List<List<string>>();
                         var textTotalLines = lr.LogRead(ref devTextList);
 
-                        IExcelWriter writer = new DevExcelWriter(fullFilePath);
-                        var devTotalLine = writer.excelWrite(ref devTextList);
+                        var devTotalLine = writer.excelWrite(ref devTextList, fullFilePath);
                         MessageBox.Show(string.Format("Transfer Done {0} of {1} Successfully.\nText Line:  {2}\nExcel Line: {3}", index, ofdDevLog.FileNames.Length, textTotalLines, devTotalLine), "Done");
                         index++;
                     }
@@ -106,6 +107,7 @@ namespace TPLogAnalyzer
                         MessageBox.Show(string.Format("Please choose dev Log.\n{0}", fullFilePath), "Error");
                     }
                 }
+                tbDevPath.Text = "";
             }
             catch (Exception ex)
             {
