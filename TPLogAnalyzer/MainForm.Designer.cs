@@ -43,7 +43,12 @@ namespace TPLogAnalyzer
             this.configToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.modifyConfigFileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.btDevStartTransfer = new System.Windows.Forms.Button();
+            this.statusStrip1 = new System.Windows.Forms.StatusStrip();
+            this.toolStripStatusLabel = new System.Windows.Forms.ToolStripStatusLabel();
+            this.toolStripProgressBar = new System.Windows.Forms.ToolStripProgressBar();
+            this.bwProgress = new System.ComponentModel.BackgroundWorker();
             this.menuStrip1.SuspendLayout();
+            this.statusStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
             // label1
@@ -158,11 +163,39 @@ namespace TPLogAnalyzer
             this.btDevStartTransfer.UseVisualStyleBackColor = true;
             this.btDevStartTransfer.Click += new System.EventHandler(this.btDevStartTransfer_Click);
             // 
+            // statusStrip1
+            // 
+            this.statusStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.toolStripStatusLabel,
+            this.toolStripProgressBar});
+            this.statusStrip1.Location = new System.Drawing.Point(0, 225);
+            this.statusStrip1.Name = "statusStrip1";
+            this.statusStrip1.Size = new System.Drawing.Size(478, 22);
+            this.statusStrip1.TabIndex = 9;
+            this.statusStrip1.Text = "statusStrip";
+            // 
+            // toolStripStatusLabel
+            // 
+            this.toolStripStatusLabel.ForeColor = System.Drawing.SystemColors.WindowFrame;
+            this.toolStripStatusLabel.Name = "toolStripStatusLabel";
+            this.toolStripStatusLabel.Size = new System.Drawing.Size(56, 17);
+            this.toolStripStatusLabel.Text = "select file";
+            // 
+            // toolStripProgressBar
+            // 
+            this.toolStripProgressBar.Name = "toolStripProgressBar";
+            this.toolStripProgressBar.Size = new System.Drawing.Size(100, 16);
+            // 
+            // bwProgress
+            // 
+            this.bwProgress.WorkerReportsProgress = true;
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(478, 247);
+            this.Controls.Add(this.statusStrip1);
             this.Controls.Add(this.btDevStartTransfer);
             this.Controls.Add(this.btStsStartTransfer);
             this.Controls.Add(this.btDevChoosePath);
@@ -178,6 +211,8 @@ namespace TPLogAnalyzer
             this.Text = "TPLog";
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();
+            this.statusStrip1.ResumeLayout(false);
+            this.statusStrip1.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -197,6 +232,10 @@ namespace TPLogAnalyzer
         private System.Windows.Forms.ToolStripMenuItem configToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem modifyConfigFileToolStripMenuItem;
         private System.Windows.Forms.Button btDevStartTransfer;
+        private System.Windows.Forms.StatusStrip statusStrip1;
+        private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabel;
+        private System.Windows.Forms.ToolStripProgressBar toolStripProgressBar;
+        private System.ComponentModel.BackgroundWorker bwProgress;
     }
 }
 

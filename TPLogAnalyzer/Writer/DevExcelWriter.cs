@@ -83,10 +83,13 @@ namespace TPLogAnalyzer.Writer
                             // todo. use regex
                             if (row[LogColumns.devTextColumnIndex].ToLower().Contains(item.KeyWord.ToLower()))
                             {
-                                IName cellName = devSheet.Workbook.CreateName();
-                                cellName.NameName = item.KeyWord.Replace(' ', '_') + "___" + m_configKeywordCount[item.KeyWord];
-                                cellName.RefersToFormula = string.Format("'{0}'!$A${1}:$D${2}", sheetName, excelRow.RowNum + 1, excelRow.RowNum + 1);
-                                m_configKeywordCount[item.KeyWord] += 1;
+                                if (item.IsDefineCellName)
+                                {
+                                    IName cellName = devSheet.Workbook.CreateName();
+                                    cellName.NameName = item.KeyWord.Replace(' ', '_') + "___" + m_configKeywordCount[item.KeyWord];
+                                    cellName.RefersToFormula = string.Format("'{0}'!$A${1}:$D${2}", sheetName, excelRow.RowNum + 1, excelRow.RowNum + 1);
+                                    m_configKeywordCount[item.KeyWord] += 1;
+                                }
 
                                 ICellStyle cellStyle = m_workbook.CreateCellStyle();
                                 IFont cellFont = m_workbook.CreateFont();
@@ -101,7 +104,6 @@ namespace TPLogAnalyzer.Writer
                     }
                 }
 
-                string dateTime = DateTime.Now.ToString("yyyy-MM-dd HH-mm-ss");
                 using (FileStream fs = File.Open(filePath + "\\DevLog.xlsx", FileMode.OpenOrCreate))
                 {
                     m_workbook.Write(fs);

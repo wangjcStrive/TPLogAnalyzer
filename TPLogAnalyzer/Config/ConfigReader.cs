@@ -33,7 +33,8 @@ namespace TPLogAnalyzer.Config
                                                item.Element("fontBold").Value,
                                                item.Element("fontColor").Value,
                                                item.Element("fontSize").Value,
-                                               item.Element("backgroundColor").Value);
+                                               item.Element("backgroundColor").Value,
+                                               item.Element("isDefineCellName").Value);
             m_configList = devSQL.ToList();
         }
 

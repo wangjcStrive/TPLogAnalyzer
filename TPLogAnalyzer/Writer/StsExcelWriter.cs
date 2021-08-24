@@ -66,10 +66,13 @@ namespace TPLogAnalyzer.Writer
                             // todo. use regex
                             if (row[LogColumns.stsTextColumnIndex].ToLower().Contains(item.KeyWord.ToLower()))
                             {
-                                IName cellName = stsSheet.Workbook.CreateName();
-                                cellName.NameName = item.KeyWord.Replace(' ', '_') + "___" + m_configKeywordCount[item.KeyWord];
-                                cellName.RefersToFormula = string.Format("'{0}'!$A${1}:$D${2}", sheetName, excelRow.RowNum + 1, excelRow.RowNum + 1);
-                                m_configKeywordCount[item.KeyWord] += 1;
+                                if (item.IsDefineCellName)
+                                {
+                                    IName cellName = stsSheet.Workbook.CreateName();
+                                    cellName.NameName = item.KeyWord.Replace(' ', '_') + "___" + m_configKeywordCount[item.KeyWord];
+                                    cellName.RefersToFormula = string.Format("'{0}'!$A${1}:$D${2}", sheetName, excelRow.RowNum + 1, excelRow.RowNum + 1);
+                                    m_configKeywordCount[item.KeyWord] += 1;
+                                }
 
                                 ICellStyle cellStyle = m_workbook.CreateCellStyle();
                                 IFont cellFont = m_workbook.CreateFont();

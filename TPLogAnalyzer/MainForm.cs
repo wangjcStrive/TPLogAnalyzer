@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.Windows.Forms;
 using TPLogAnalyzer.LogReader;
@@ -18,10 +19,15 @@ namespace TPLogAnalyzer
         public MainForm()
         {
             InitializeComponent();
+            // DoWork will be called when user call BackgroundWorker.RunWorkerAsync()
+            bwProgress.DoWork += new DoWorkEventHandler(startTransfer_DoWork);
+            // ProgressChanged will be caled when user call BackgroundWorker.ReportProgress
+            bwProgress.ProgressChanged += new ProgressChangedEventHandler(transfer_ProgressChanged);
+
+            bwProgress.RunWorkerCompleted += new RunWorkerCompletedEventHandler(transferComplete_WorkerCompleted);
             this.StartPosition = FormStartPosition.CenterScreen;
         }
 
-        // todo. select multi files
         private void btStsChoosePath_Click(object sender, EventArgs e)
         {
             if (ofdStsLog.ShowDialog() == DialogResult.OK)
@@ -29,6 +35,11 @@ namespace TPLogAnalyzer
                 foreach (var item in ofdStsLog.FileNames)
                 {
                     tbStsPath.Text += item + @"; ";
+                }
+                if (!bwProgress.IsBusy)
+                {
+                    toolStripStatusLabel.Text = "Waiting Transfer!   ";
+                    toolStripProgressBar.Value = 0;
                 }
             }
             else
@@ -45,6 +56,11 @@ namespace TPLogAnalyzer
                 {
                     tbDevPath.Text += item + @"; ";
                 }
+                if (!bwProgress.IsBusy)
+                {
+                    toolStripStatusLabel.Text = "Waiting Transfer!   ";
+                    toolStripProgressBar.Value = 0;
+                }
             }
             else
             {
@@ -56,19 +72,72 @@ namespace TPLogAnalyzer
         {
             try
             {
+                if (tbStsPath.Text == "")
+                {
+                    MessageBox.Show(string.Format("Please choose sts Log file first."), "Error");
+                    return;
+                }
+
+                if (bwProgress.IsBusy)
+                {
+                    MessageBox.Show("In Processing. wait!", "Error");
+                    return;
+                }
+                // RunWorkerAsync will call backgroundWroker's DoWork
+                bwProgress.RunWorkerAsync(enumLogType.stsLogType);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "Error");
+            }
+        }
+
+        private void btDevStartTransfer_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                if (tbDevPath.Text == "")
+                {
+                    MessageBox.Show(string.Format("Please choose dev Log file first."), "Error");
+                    return;
+                }
+
+                if (bwProgress.IsBusy)
+                {
+                    MessageBox.Show("In Processing. wait!", "Error");
+                    return;
+                }
+                // RunWorkerAsync will call backgroundWroker's DoWork
+                bwProgress.RunWorkerAsync(enumLogType.DevLogType);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "Error");
+                throw;
+            }
+        }
+
+        // backgroundWorker start tranfer.
+        public void startTransfer_DoWork(object sender, DoWorkEventArgs e)
+        {
+            var logType = (enumLogType)e.Argument;
+            int index = 1;
+            if (logType == enumLogType.stsLogType)
+            {
                 IExcelWriter writer = new StsExcelWriter();
-                int index = 1;
+                toolStripProgressBar.Maximum = ofdStsLog.FileNames.Length;
                 foreach (var fullFilePath in ofdStsLog.FileNames)
                 {
                     if (fullFilePath.ToLower().Contains("sts"))
                     {
+
                         // todo. move logReader to IOC
                         ILogReader lr = new LogFileReader(fullFilePath);
                         List<List<string>> stsTextList = new List<List<string>>();
                         var textTotalLines = lr.LogRead(ref stsTextList);
 
-                        var devTotalLine = writer.excelWrite(ref stsTextList, fullFilePath);
-                        MessageBox.Show(string.Format("Transfer Done {0} of {1} Successfully.\nText Line:  {2}\nExcel Line: {3}", index, ofdStsLog.FileNames.Length, textTotalLines, devTotalLine), "Done");
+                        writer.excelWrite(ref stsTextList, fullFilePath);
+                        bwProgress.ReportProgress(index, string.Format("{0} of {1}", index, ofdStsLog.FileNames.Length));
                         index++;
                     }
                     else
@@ -78,16 +147,9 @@ namespace TPLogAnalyzer
                 }
                 tbStsPath.Text = "";
             }
-            catch (Exception ex)
+            else if(logType == enumLogType.DevLogType)
             {
-                MessageBox.Show(ex.Message, "Error");
-            }
-        }
-        private void btDevStartTransfer_Click(object sender, EventArgs e)
-        {
-            try
-            {
-                int index = 1;
+                toolStripProgressBar.Maximum = ofdDevLog.FileNames.Length;
                 IExcelWriter writer = new DevExcelWriter();
                 foreach (var fullFilePath in ofdDevLog.FileNames)
                 {
@@ -98,8 +160,8 @@ namespace TPLogAnalyzer
                         List<List<string>> devTextList = new List<List<string>>();
                         var textTotalLines = lr.LogRead(ref devTextList);
 
-                        var devTotalLine = writer.excelWrite(ref devTextList, fullFilePath);
-                        MessageBox.Show(string.Format("Transfer Done {0} of {1} Successfully.\nText Line:  {2}\nExcel Line: {3}", index, ofdDevLog.FileNames.Length, textTotalLines, devTotalLine), "Done");
+                        writer.excelWrite(ref devTextList, fullFilePath);
+                        bwProgress.ReportProgress(index, string.Format("{0} of {1}", index, ofdDevLog.FileNames.Length));
                         index++;
                     }
                     else
@@ -109,11 +171,18 @@ namespace TPLogAnalyzer
                 }
                 tbDevPath.Text = "";
             }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message, "Error");
-                throw;
-            }
+        }
+
+        private void transfer_ProgressChanged(object sender, ProgressChangedEventArgs e)
+        {
+            toolStripProgressBar.Value = e.ProgressPercentage;
+            toolStripStatusLabel.Text = "Process " + (string)e.UserState + " Done!";
+        }
+
+        private void transferComplete_WorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+        {
+            toolStripStatusLabel.Text = "Done!               ";
+            MessageBox.Show("Transfer Done!", "Info");
         }
 
         private void modifyConfigFileToolStripMenuItem_Click(object sender, EventArgs e)
