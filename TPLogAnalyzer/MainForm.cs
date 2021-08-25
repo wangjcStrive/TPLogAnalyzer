@@ -36,9 +36,9 @@ namespace TPLogAnalyzer
                 {
                     tbStsPath.Text += item + @"; ";
                 }
+                toolStripStatusLabel.Text = string.Format("{0}   files waiting transfer!", ofdStsLog.FileNames.Length);
                 if (!bwProgress.IsBusy)
                 {
-                    toolStripStatusLabel.Text = "Waiting Transfer!   ";
                     toolStripProgressBar.Value = 0;
                 }
             }
@@ -56,9 +56,9 @@ namespace TPLogAnalyzer
                 {
                     tbDevPath.Text += item + @"; ";
                 }
+                toolStripStatusLabel.Text = string.Format("{0}   files waiting transfer!", ofdDevLog.FileNames.Length);
                 if (!bwProgress.IsBusy)
                 {
-                    toolStripStatusLabel.Text = "Waiting Transfer!   ";
                     toolStripProgressBar.Value = 0;
                 }
             }
@@ -147,7 +147,7 @@ namespace TPLogAnalyzer
                     }
                 }
             }
-            else if(logType == enumLogType.DevLogType)
+            else if (logType == enumLogType.DevLogType)
             {
                 IExcelWriter writer = new DevExcelWriter();
                 foreach (var fullFilePath in ofdDevLog.FileNames)
