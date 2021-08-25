@@ -83,8 +83,10 @@ namespace TPLogAnalyzer
                     MessageBox.Show("In Processing. wait!", "Error");
                     return;
                 }
+                toolStripProgressBar.Maximum = ofdStsLog.FileNames.Length;
                 // RunWorkerAsync will call backgroundWroker's DoWork
                 bwProgress.RunWorkerAsync(enumLogType.stsLogType);
+                tbStsPath.Text = "";
             }
             catch (Exception ex)
             {
@@ -107,8 +109,10 @@ namespace TPLogAnalyzer
                     MessageBox.Show("In Processing. wait!", "Error");
                     return;
                 }
+                toolStripProgressBar.Maximum = ofdDevLog.FileNames.Length;
                 // RunWorkerAsync will call backgroundWroker's DoWork
                 bwProgress.RunWorkerAsync(enumLogType.DevLogType);
+                tbDevPath.Text = "";
             }
             catch (Exception ex)
             {
@@ -125,7 +129,6 @@ namespace TPLogAnalyzer
             if (logType == enumLogType.stsLogType)
             {
                 IExcelWriter writer = new StsExcelWriter();
-                toolStripProgressBar.Maximum = ofdStsLog.FileNames.Length;
                 foreach (var fullFilePath in ofdStsLog.FileNames)
                 {
                     if (fullFilePath.ToLower().Contains("sts"))
@@ -145,11 +148,9 @@ namespace TPLogAnalyzer
                         MessageBox.Show(string.Format("Please choose sts Log.\n{0}", fullFilePath), "Error");
                     }
                 }
-                tbStsPath.Text = "";
             }
             else if(logType == enumLogType.DevLogType)
             {
-                toolStripProgressBar.Maximum = ofdDevLog.FileNames.Length;
                 IExcelWriter writer = new DevExcelWriter();
                 foreach (var fullFilePath in ofdDevLog.FileNames)
                 {
@@ -169,7 +170,6 @@ namespace TPLogAnalyzer
                         MessageBox.Show(string.Format("Please choose dev Log.\n{0}", fullFilePath), "Error");
                     }
                 }
-                tbDevPath.Text = "";
             }
         }
 
@@ -177,6 +177,8 @@ namespace TPLogAnalyzer
         {
             toolStripProgressBar.Value = e.ProgressPercentage;
             toolStripStatusLabel.Text = "Process " + (string)e.UserState + " Done!";
+            //statusStrip1.Update();
+            //statusStrip1.Refresh();
         }
 
         private void transferComplete_WorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
