@@ -86,7 +86,6 @@ namespace TPLogAnalyzer
                 toolStripProgressBar.Maximum = ofdStsLog.FileNames.Length;
                 // RunWorkerAsync will call backgroundWroker's DoWork
                 bwProgress.RunWorkerAsync(enumLogType.stsLogType);
-                tbStsPath.Text = "";
             }
             catch (Exception ex)
             {
@@ -112,7 +111,6 @@ namespace TPLogAnalyzer
                 toolStripProgressBar.Maximum = ofdDevLog.FileNames.Length;
                 // RunWorkerAsync will call backgroundWroker's DoWork
                 bwProgress.RunWorkerAsync(enumLogType.DevLogType);
-                tbDevPath.Text = "";
             }
             catch (Exception ex)
             {
@@ -177,13 +175,12 @@ namespace TPLogAnalyzer
         {
             toolStripProgressBar.Value = e.ProgressPercentage;
             toolStripStatusLabel.Text = "Process " + (string)e.UserState + " Done!";
-            //statusStrip1.Update();
-            //statusStrip1.Refresh();
         }
 
         private void transferComplete_WorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
             toolStripStatusLabel.Text = "Done!               ";
+            toolStripProgressBar.Value = 0;
             MessageBox.Show("Transfer Done!", "Info");
         }
 
