@@ -131,8 +131,6 @@ namespace TPLogAnalyzer
                 {
                     if (fullFilePath.ToLower().Contains("sts"))
                     {
-
-                        // todo. move logReader to IOC
                         ILogReader lr = new LogFileReader(fullFilePath);
                         List<List<string>> stsTextList = new List<List<string>>();
                         var textTotalLines = lr.LogRead(ref stsTextList);
@@ -145,6 +143,8 @@ namespace TPLogAnalyzer
                     {
                         MessageBox.Show(string.Format("Please choose sts Log.\n{0}", fullFilePath), "Error");
                     }
+
+                    NLog.LogManager.GetCurrentClassLogger().Info("{0} transfer done!", fullFilePath);
                 }
             }
             else if (logType == enumLogType.DevLogType)
@@ -154,7 +154,6 @@ namespace TPLogAnalyzer
                 {
                     if (fullFilePath.ToLower().Contains("dev"))
                     {
-                        // todo. move logReader to IOC
                         ILogReader lr = new LogFileReader(fullFilePath);
                         List<List<string>> devTextList = new List<List<string>>();
                         var textTotalLines = lr.LogRead(ref devTextList);
@@ -167,6 +166,8 @@ namespace TPLogAnalyzer
                     {
                         MessageBox.Show(string.Format("Please choose dev Log.\n{0}", fullFilePath), "Error");
                     }
+
+                    NLog.LogManager.GetCurrentClassLogger().Info("{0} transfer done!", fullFilePath);
                 }
             }
         }
