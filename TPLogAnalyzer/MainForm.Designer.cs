@@ -44,9 +44,10 @@ namespace TPLogAnalyzer
             this.modifyConfigFileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.btDevStartTransfer = new System.Windows.Forms.Button();
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
-            this.toolStripStatusLabel = new System.Windows.Forms.ToolStripStatusLabel();
             this.toolStripProgressBar = new System.Windows.Forms.ToolStripProgressBar();
+            this.toolStripStatusLabel = new System.Windows.Forms.ToolStripStatusLabel();
             this.bwProgress = new System.ComponentModel.BackgroundWorker();
+            this.logsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             this.statusStrip1.SuspendLayout();
             this.SuspendLayout();
@@ -140,7 +141,8 @@ namespace TPLogAnalyzer
             // configToolStripMenuItem
             // 
             this.configToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.modifyConfigFileToolStripMenuItem});
+            this.modifyConfigFileToolStripMenuItem,
+            this.logsToolStripMenuItem});
             this.configToolStripMenuItem.Font = new System.Drawing.Font("Segoe UI", 8F);
             this.configToolStripMenuItem.Name = "configToolStripMenuItem";
             this.configToolStripMenuItem.Size = new System.Drawing.Size(54, 20);
@@ -149,7 +151,7 @@ namespace TPLogAnalyzer
             // modifyConfigFileToolStripMenuItem
             // 
             this.modifyConfigFileToolStripMenuItem.Name = "modifyConfigFileToolStripMenuItem";
-            this.modifyConfigFileToolStripMenuItem.Size = new System.Drawing.Size(169, 22);
+            this.modifyConfigFileToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.modifyConfigFileToolStripMenuItem.Text = "&Modify Config File";
             this.modifyConfigFileToolStripMenuItem.Click += new System.EventHandler(this.modifyConfigFileToolStripMenuItem_Click);
             // 
@@ -174,6 +176,12 @@ namespace TPLogAnalyzer
             this.statusStrip1.TabIndex = 9;
             this.statusStrip1.Text = "statusStrip";
             // 
+            // toolStripProgressBar
+            // 
+            this.toolStripProgressBar.AutoToolTip = true;
+            this.toolStripProgressBar.Name = "toolStripProgressBar";
+            this.toolStripProgressBar.Size = new System.Drawing.Size(100, 16);
+            // 
             // toolStripStatusLabel
             // 
             this.toolStripStatusLabel.ForeColor = System.Drawing.SystemColors.WindowFrame;
@@ -181,15 +189,16 @@ namespace TPLogAnalyzer
             this.toolStripStatusLabel.Size = new System.Drawing.Size(56, 17);
             this.toolStripStatusLabel.Text = "select file";
             // 
-            // toolStripProgressBar
-            // 
-            this.toolStripProgressBar.AutoToolTip = true;
-            this.toolStripProgressBar.Name = "toolStripProgressBar";
-            this.toolStripProgressBar.Size = new System.Drawing.Size(100, 16);
-            // 
             // bwProgress
             // 
             this.bwProgress.WorkerReportsProgress = true;
+            // 
+            // logsToolStripMenuItem
+            // 
+            this.logsToolStripMenuItem.Name = "logsToolStripMenuItem";
+            this.logsToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.logsToolStripMenuItem.Text = "Logs";
+            this.logsToolStripMenuItem.Click += new System.EventHandler(this.logsToolStripMenuItem_Click);
             // 
             // MainForm
             // 
@@ -237,6 +246,7 @@ namespace TPLogAnalyzer
         private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabel;
         private System.Windows.Forms.ToolStripProgressBar toolStripProgressBar;
         private System.ComponentModel.BackgroundWorker bwProgress;
+        private System.Windows.Forms.ToolStripMenuItem logsToolStripMenuItem;
     }
 }
 

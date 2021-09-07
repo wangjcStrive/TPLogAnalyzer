@@ -36,6 +36,7 @@ namespace TPLogAnalyzer
                 {
                     tbStsPath.Text += item + @"; ";
                 }
+                NLog.LogManager.GetCurrentClassLogger().Info("File Choose: {0}!", tbStsPath.Text);
                 toolStripStatusLabel.Text = string.Format("{0}   files waiting transfer!", ofdStsLog.FileNames.Length);
                 if (!bwProgress.IsBusy)
                 {
@@ -56,6 +57,7 @@ namespace TPLogAnalyzer
                 {
                     tbDevPath.Text += item + @"; ";
                 }
+                NLog.LogManager.GetCurrentClassLogger().Info("File Choose: {0}!", tbDevPath.Text);
                 toolStripStatusLabel.Text = string.Format("{0}   files waiting transfer!", ofdDevLog.FileNames.Length);
                 if (!bwProgress.IsBusy)
                 {
@@ -114,6 +116,7 @@ namespace TPLogAnalyzer
             }
             catch (Exception ex)
             {
+                NLog.LogManager.GetCurrentClassLogger().Info("Exception: {0}", ex.Message);
                 MessageBox.Show(ex.Message, "Error");
                 throw;
             }
@@ -124,9 +127,12 @@ namespace TPLogAnalyzer
         {
             var logType = (enumLogType)e.Argument;
             int index = 1;
+            DateTime beforeTransfer = System.DateTime.Now;
+
             if (logType == enumLogType.stsLogType)
             {
                 IExcelWriter writer = new StsExcelWriter();
+                NLog.LogManager.GetCurrentClassLogger().Info("StsLog transfer start!!!");
                 foreach (var fullFilePath in ofdStsLog.FileNames)
                 {
                     if (fullFilePath.ToLower().Contains("sts"))
@@ -137,6 +143,7 @@ namespace TPLogAnalyzer
 
                         writer.excelWrite(ref stsTextList, fullFilePath);
                         bwProgress.ReportProgress(index, string.Format("{0} of {1}", index, ofdStsLog.FileNames.Length));
+                        NLog.LogManager.GetCurrentClassLogger().Info("{0} transfer done! {1} of {2}", fullFilePath, index, ofdStsLog.FileNames.Length);
                         index++;
                     }
                     else
@@ -144,12 +151,12 @@ namespace TPLogAnalyzer
                         MessageBox.Show(string.Format("Please choose sts Log.\n{0}", fullFilePath), "Error");
                     }
 
-                    NLog.LogManager.GetCurrentClassLogger().Info("{0} transfer done!", fullFilePath);
                 }
             }
             else if (logType == enumLogType.DevLogType)
             {
                 IExcelWriter writer = new DevExcelWriter();
+                NLog.LogManager.GetCurrentClassLogger().Info("DevLog transfer start!!!");
                 foreach (var fullFilePath in ofdDevLog.FileNames)
                 {
                     if (fullFilePath.ToLower().Contains("dev"))
@@ -160,16 +167,19 @@ namespace TPLogAnalyzer
 
                         writer.excelWrite(ref devTextList, fullFilePath);
                         bwProgress.ReportProgress(index, string.Format("{0} of {1}", index, ofdDevLog.FileNames.Length));
+                        NLog.LogManager.GetCurrentClassLogger().Info("{0} transfer done! {1} of {2}", fullFilePath, index, ofdDevLog.FileNames.Length);
                         index++;
                     }
                     else
                     {
                         MessageBox.Show(string.Format("Please choose dev Log.\n{0}", fullFilePath), "Error");
                     }
-
-                    NLog.LogManager.GetCurrentClassLogger().Info("{0} transfer done!", fullFilePath);
                 }
             }
+            DateTime afterTransfer = System.DateTime.Now;
+            TimeSpan ts = afterTransfer.Subtract(beforeTransfer);
+            NLog.LogManager.GetCurrentClassLogger().Info("{0} transfer done after {1}:{2}:{3}.{4}", logType.ToString(), ts.Hours, ts.Minutes, ts.Seconds, ts.Milliseconds);;
+
         }
 
         private void transfer_ProgressChanged(object sender, ProgressChangedEventArgs e)
@@ -190,5 +200,9 @@ namespace TPLogAnalyzer
             Process.Start(@".\TPLogAnalyzer Config.xml");
         }
 
+        private void logsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Process.Start(@".\TPLogTransferLog.txt");
+        }
     }
 }
