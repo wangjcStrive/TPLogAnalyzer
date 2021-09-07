@@ -178,7 +178,7 @@ namespace TPLogAnalyzer
             }
             DateTime afterTransfer = System.DateTime.Now;
             TimeSpan ts = afterTransfer.Subtract(beforeTransfer);
-            NLog.LogManager.GetCurrentClassLogger().Info("{0} transfer done after {1}:{2}:{3}.{4}", logType.ToString(), ts.Hours, ts.Minutes, ts.Seconds, ts.Milliseconds);;
+            NLog.LogManager.GetCurrentClassLogger().Info("{0} transfer done after {1}:{2}:{3}.{4}", logType.ToString(), ts.Hours, ts.Minutes, ts.Seconds, ts.Milliseconds);
 
         }
 
